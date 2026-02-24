@@ -70,18 +70,16 @@ export class TabManager {
         if (tab) {
             tab.destroy();
             this.tabs.delete(id);
-            const index = this.tabOrder.indexOf(id);
-            if (index !== -1) this.tabOrder.splice(index, 1);
-        }
-        if (this.activeTabId === id) {
-            // Activate next tab or previous
-            if (this.tabOrder.length > 0) {
-                this.activateTab(this.tabOrder[Math.min(index, this.tabOrder.length-1)]);
-            } else {
-                // Should not happen, but just in case
-                this.createTab('newtab.html', true);
-            }
-        }
+            const index = this.tabOrder.indexOf(id); // define index here
+if (index !== -1) this.tabOrder.splice(index, 1);
+// then later when activating next tab:
+if (this.activeTabId === id) {
+    if (this.tabOrder.length > 0) {
+        this.activateTab(this.tabOrder[Math.min(index, this.tabOrder.length - 1)]);
+    } else {
+        this.createTab('newtab.html', true);
+    }
+}
         this.browser.tabBar.render(this.tabOrder, this.activeTabId);
         this.saveSession();
     }
