@@ -1,0 +1,14 @@
+{
+  "dark": {
+    "bg": "#0d0f1c",
+    "fg": "#0ff",
+    "accent": "#f0f",
+    "surface": "#1e1e2f"
+  },
+  "light": {
+    "bg": "#f0f0fc",
+    "fg": "#1a1a2e",
+    "accent": "#a0a",
+    "surface": "#fff"
+  }
+}
