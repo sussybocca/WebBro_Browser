@@ -139,82 +139,10 @@
         <footer>type a query or a site slug</footer>
     </div>
 
-    <script>
-        const searchInput = document.getElementById('searchInput');
-        const suggestionsDiv = document.getElementById('suggestions');
-        let siteDatabase = [];
-
-        // Request site list from parent
-        window.parent.postMessage({ type: 'getSites' }, '*');
-
-        window.addEventListener('message', event => {
-            if (event.data.type === 'sitesList') {
-                siteDatabase = event.data.sites; // array of {url, title}
-            }
-        });
-
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.trim().toLowerCase();
-            if (!query) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-            // Filter sites
-            const matches = siteDatabase.filter(site => 
-                site.url.toLowerCase().includes(query) || 
-                site.title.toLowerCase().includes(query)
-            ).slice(0, 8);
-            if (matches.length === 0) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-            suggestionsDiv.innerHTML = matches.map(site => 
-                `<div class="suggestion-item" data-url="${site.url}">${site.title} (${site.url})</div>`
-            ).join('');
-            suggestionsDiv.style.display = 'block';
-        });
-
-        suggestionsDiv.addEventListener('click', e => {
-            const target = e.target.closest('.suggestion-item');
-            if (target) {
-                const url = target.dataset.url;
-                window.parent.postMessage({ type: 'navigate', url }, '*');
-                suggestionsDiv.style.display = 'none';
-                searchInput.value = '';
-            }
-        });
-
-        searchInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    // If it looks like a URL slug (no spaces), try direct navigation
-                    if (!query.includes(' ') && !query.includes('.')) {
-                        window.parent.postMessage({ type: 'navigate', url: query }, '*');
-                    } else {
-                        // Otherwise perform search
-                        window.parent.postMessage({ type: 'search', query }, '*');
-                    }
-                    searchInput.value = '';
-                    suggestionsDiv.style.display = 'none';
-                }
-            }
-        });
-
-        document.querySelectorAll('.quick-links a').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                const url = link.dataset.url;
-                window.parent.postMessage({ type: 'navigate', url }, '*');
-            });
-        });
-
-        // Close suggestions when clicking outside
-        document.addEventListener('click', e => {
-            if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
-                suggestionsDiv.style.display = 'none';
-            }
-        });
+    <!-- Modular script import – retains all complexity -->
+    <script type="module">
+        import { initNewTabPage } from '/js/components/NewTabPage.js';
+        initNewTabPage();
     </script>
 </body>
 </html>
