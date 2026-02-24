@@ -30,11 +30,10 @@ export class SearchEngine {
         }
     }
 
-    renderResults(query, results) {
-        if (results.length === 0) {
-            return `<html><body style="background:#1a1a2e;color:#0ff;padding:2rem;"><h1>No results for "${query}"</h1></body></html>`;
-        }
-        const list = results.map(r => `<li><a href="#" onclick="parent.postMessage({type:'navigate',url:'${r.url}'},'*')">${r.title}</a> (score: ${r.score.toFixed(2)})</li>`).join('');
-        return `<html><body style="background:#1a1a2e;color:#0ff;padding:2rem;"><h1>Search results for "${query}"</h1><ul>${list}</ul></body></html>`;
+   renderResults(query, results) {
+    if (!Array.isArray(results) || results.length === 0) {
+        return `<html><body style="background:#1a1a2e;color:#0ff;padding:2rem;"><h1>No results for "${query}"</h1></body></html>`;
     }
+    const list = results.map(r => `<li><a href="#" onclick="parent.postMessage({type:'navigate',url:'${r.url}'},'*')">${r.title}</a> (score: ${r.score.toFixed(2)})</li>`).join('');
+    return `<html><body style="background:#1a1a2e;color:#0ff;padding:2rem;"><h1>Search results for "${query}"</h1><ul>${list}</ul></body></html>`;
 }
