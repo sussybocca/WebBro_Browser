@@ -1,0 +1,19 @@
+{
+  "name": "Chaos Browser",
+  "short_name": "Chaos",
+  "description": "A chaotic browser inside your browser – fully immersive, sandboxed, and offline‑capable.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0f1c",
+  "theme_color": "#1e1e2f",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "New Tab", "url": "/newtab.html", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Bookmarks", "url": "/bookmarks.html", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "History", "url": "/history.html", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Settings", "url": "/settings.html", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
