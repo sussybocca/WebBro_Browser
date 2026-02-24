@@ -51,11 +51,15 @@ export class TabManager {
             const oldTab = this.tabs.get(this.activeTabId);
             oldTab.deactivate();
         }
-        this.activeTabId = id;
-        const newTab = this.tabs.get(id);
-        newTab.activate();
-        this.browser.urlBar.setValue(newTab.currentUrl);
-        this.browser.tabBar.render(this.tabOrder, this.activeTabId);
+       activateTab(id) {
+    if (!this.tabs.has(id)) return;
+    if (this.activeTabId) {
+        const oldTab = this.tabs.get(this.activeTabId);
+        if (oldTab) oldTab.deactivate(); // guard added
+    }
+    this.activeTabId = id;
+    const newTab = this.tabs.get(id);
+    newTab.activate();
         this.browser.navController.updateButtons(newTab.canGoBack(), newTab.canGoForward());
     }
 
