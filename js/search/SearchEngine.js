@@ -2,7 +2,7 @@
 export class SearchEngine {
     constructor(siteDB) {
         this.siteDB = siteDB;
-        this.worker = new Worker('/js/search/search.worker.js');
+     this.worker = new Worker('/js/search/search.worker.js', { type: 'module' });
         this.worker.onmessage = this.handleWorkerMessage.bind(this);
         this.callbacks = new Map(); // id -> resolve
         this.requestId = 0;
