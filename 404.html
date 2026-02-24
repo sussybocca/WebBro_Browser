@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 – Chaos Redirect</title>
+    <style>
+        body { background: #0a0c14; color: #f0f; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; flex-direction: column; }
+        .glitch { font-size: 4rem; animation: glitch 0.8s infinite; }
+        @keyframes glitch {
+            0% { text-shadow: 3px 3px red; transform: skew(0deg); }
+            10% { text-shadow: -3px -3px blue; transform: skew(5deg); }
+            20% { text-shadow: 3px -3px lime; transform: skew(-5deg); }
+            30% { text-shadow: -3px 3px yellow; transform: skew(5deg); }
+            40% { text-shadow: 3px 3px magenta; transform: skew(-5deg); }
+            50% { text-shadow: -3px -3px cyan; transform: skew(0deg); }
+            60% { text-shadow: 3px -3px red; transform: skew(5deg); }
+            70% { text-shadow: -3px 3px blue; transform: skew(-5deg); }
+            80% { text-shadow: 3px 3px lime; transform: skew(5deg); }
+            90% { text-shadow: -3px -3px yellow; transform: skew(-5deg); }
+            100% { text-shadow: 3px 3px magenta; transform: skew(0deg); }
+        }
+        .sub { font-size: 1.2rem; opacity: 0.7; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="glitch">🌀 404</div>
+    <div class="sub">reality fracture – redirecting...</div>
+    <script>
+        setTimeout(() => { location.href = "/"; }, 2000);
+    </script>
+</body>
+</html>
