@@ -1,0 +1,9 @@
+:root {
+    --bg: #0d0f1c;
+    --fg: #0ff;
+    --accent: #f0f;
+    --surface: #1e1e2f;
+    --surface-light: #2a2a3b;
+    --border: #4a4a6a;
+    --glow: 0 0 15px var(--accent);
+}
