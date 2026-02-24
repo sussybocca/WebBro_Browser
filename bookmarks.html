@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Bookmarks – Chaos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0a0c14;
+            color: #0ff;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+        }
+        h1 { font-size: 3rem; text-shadow: 0 0 10px #f0f; margin-bottom: 2rem; }
+        .bookmark-list {
+            list-style: none;
+            background: #1a1a2e;
+            border: 1px solid #f0f;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .bookmark-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid #2a2a4a;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .bookmark-item:hover {
+            background: #2a2a4a;
+        }
+        .bookmark-item:last-child {
+            border-bottom: none;
+        }
+        .bookmark-title {
+            font-weight: bold;
+            color: #b0f;
+        }
+        .bookmark-url {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #f66;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+        }
+        .delete-btn:hover {
+            color: #f00;
+        }
+        .empty {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>★ Bookmarks</h1>
+    <div id="bookmarksContainer">
+        <ul class="bookmark-list" id="bookmarkList"></ul>
+    </div>
+
+    <script>
+        function renderBookmarks(bookmarks) {
+            const list = document.getElementById('bookmarkList');
+            if (!bookmarks || bookmarks.length === 0) {
+                list.innerHTML = '<li class="empty">No bookmarks yet. Press ★ in the browser to add.</li>';
+                return;
+            }
+            list.innerHTML = bookmarks.map(b => `
+                <li class="bookmark-item" data-url="${b.url}">
+                    <div style="flex:1;">
+                        <div class="bookmark-title">${b.title}</div>
+                        <div class="bookmark-url">${b.url}</div>
+                    </div>
+                    <button class="delete-btn" data-url="${b.url}">✖</button>
+                </li>
+            `).join('');
+        }
+
+        window.addEventListener('message', event => {
+            if (event.data.type === 'bookmarksList') {
+                renderBookmarks(event.data.bookmarks);
+            }
+        });
+
+        document.getElementById('bookmarkList').addEventListener('click', e => {
+            const item = e.target.closest('.bookmark-item');
+            if (item && !e.target.classList.contains('delete-btn')) {
+                const url = item.dataset.url;
+                window.parent.postMessage({ type: 'navigate', url }, '*');
+            }
+        });
+
+        document.getElementById('bookmarkList').addEventListener('click', e => {
+            if (e.target.classList.contains('delete-btn')) {
+                e.stopPropagation();
+                const url = e.target.dataset.url;
+                window.parent.postMessage({ type: 'removeBookmark', url }, '*');
+            }
+        });
+
+        // Request bookmarks on load
+        window.parent.postMessage({ type: 'getBookmarks' }, '*');
+    </script>
+</body>
+</html>
