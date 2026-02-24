@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 New Tab – Chaos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0a0c14;
+            color: #0ff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-radial-gradient(circle at 30% 40%, rgba(255,0,255,0.1) 0px, transparent 2px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .content {
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 5rem;
+            text-shadow: 0 0 10px #f0f, 0 0 20px #0ff;
+            animation: flicker 2s infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            10% { opacity: 0.8; }
+            20% { opacity: 1; }
+            30% { opacity: 0.9; }
+            40% { opacity: 1; }
+            70% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .search-container {
+            margin: 2rem 0;
+            position: relative;
+            width: 100%;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: #1e1e2f;
+            border: 2px solid #f0f;
+            color: #0ff;
+            font-size: 1.5rem;
+            outline: none;
+            border-radius: 50px;
+            font-family: inherit;
+            box-shadow: 0 0 20px rgba(255,0,255,0.5);
+        }
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border: 1px solid #f0f;
+            border-top: none;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            border-radius: 0 0 10px 10px;
+        }
+        .suggestion-item {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            color: #b0b0ff;
+            border-bottom: 1px solid #2a2a4a;
+            transition: 0.2s;
+        }
+        .suggestion-item:hover {
+            background: #2a2a4a;
+            color: #fff;
+        }
+        .quick-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .quick-links a {
+            color: #b0f;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: 1px solid #f0f;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            transition: 0.3s;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+        }
+        .quick-links a:hover {
+            background: #f0f;
+            color: #000;
+            box-shadow: 0 0 20px #f0f;
+            transform: scale(1.05);
+        }
+        footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="content">
+        <h1>🌀 CHAOS</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search internal web or enter URL..." autofocus>
+            <div id="suggestions"></div>
+        </div>
+        <div class="quick-links">
+            <a href="#" data-url="welcome">Welcome</a>
+            <a href="#" data-url="about">About</a>
+            <a href="#" data-url="gallery">Glitch Gallery</a>
+            <a href="#" data-url="settings">Settings</a>
+            <a href="#" data-url="bookmarks">Bookmarks</a>
+            <a href="#" data-url="history">History</a>
+        </div>
+        <footer>type a query or a site slug</footer>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsDiv = document.getElementById('suggestions');
+        let siteDatabase = [];
+
+        // Request site list from parent
+        window.parent.postMessage({ type: 'getSites' }, '*');
+
+        window.addEventListener('message', event => {
+            if (event.data.type === 'sitesList') {
+                siteDatabase = event.data.sites; // array of {url, title}
+            }
+        });
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) {
+                suggestionsDiv.style.display = 'none';
+                return;
+            }
+            // Filter sites
+            const matches = siteDatabase.filter(site => 
+                site.url.toLowerCase().includes(query) || 
+                site.title.toLowerCase().includes(query)
+            ).slice(0, 8);
+            if (matches.length === 0) {
+                suggestionsDiv.style.display = 'none';
+                return;
+            }
+            suggestionsDiv.innerHTML = matches.map(site => 
+                `<div class="suggestion-item" data-url="${site.url}">${site.title} (${site.url})</div>`
+            ).join('');
+            suggestionsDiv.style.display = 'block';
+        });
+
+        suggestionsDiv.addEventListener('click', e => {
+            const target = e.target.closest('.suggestion-item');
+            if (target) {
+                const url = target.dataset.url;
+                window.parent.postMessage({ type: 'navigate', url }, '*');
+                suggestionsDiv.style.display = 'none';
+                searchInput.value = '';
+            }
+        });
+
+        searchInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    // If it looks like a URL slug (no spaces), try direct navigation
+                    if (!query.includes(' ') && !query.includes('.')) {
+                        window.parent.postMessage({ type: 'navigate', url: query }, '*');
+                    } else {
+                        // Otherwise perform search
+                        window.parent.postMessage({ type: 'search', query }, '*');
+                    }
+                    searchInput.value = '';
+                    suggestionsDiv.style.display = 'none';
+                }
+            }
+        });
+
+        document.querySelectorAll('.quick-links a').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const url = link.dataset.url;
+                window.parent.postMessage({ type: 'navigate', url }, '*');
+            });
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', e => {
+            if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                suggestionsDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
