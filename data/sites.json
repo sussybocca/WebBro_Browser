@@ -1,0 +1,32 @@
+[
+  {
+    "url": "welcome",
+    "title": "Welcome to Chaos",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#000;color:#0ff;font-family:monospace;padding:2rem;text-align:center;animation:rgbPulse 10s infinite;}@keyframes rgbPulse{0%{background:#000;}25%{background:#100;}50%{background:#010;}75%{background:#001;}100%{background:#000;}}h1{font-size:3rem;text-shadow:0 0 10px magenta;}</style></head><body><h1>🌀 WELCOME</h1><p>You are inside the Chaos Browser. Everything you see is generated locally.</p><p>Try the search bar or click the links.</p></body></html>"
+  },
+  {
+    "url": "about",
+    "title": "About Chaos",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#111;color:#f0f;font-family:monospace;padding:2rem;}</style></head><body><h1>About</h1><p>A chaotic browser-in-browser built with vanilla JS, Web Workers, IndexedDB, and WebGL.</p><p>It's a sandboxed, offline-capable, fully immersive experience.</p></body></html>"
+  },
+  {
+    "url": "gallery",
+    "title": "Glitch Gallery",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#222;color:#0ff;font-family:monospace;padding:2rem;text-align:center;}.glitch-box{width:200px;height:200px;margin:2rem auto;background:repeating-linear-gradient(45deg, #f0f, #0ff, #f0f);animation:glitchMove 2s infinite;}</style></head><body><h1>GALLERY</h1><div class='glitch-box'></div><p>A glitchy square.</p></body></html>"
+  },
+  {
+    "url": "settings",
+    "title": "Settings (built-in)",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#1a1a2e;color:#0ff;}</style></head><body><h1>Settings</h1><p>This is a placeholder. Use the settings page from the browser chrome.</p></body></html>"
+  },
+  {
+    "url": "bookmarks",
+    "title": "Bookmarks (built-in)",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#1a1a2e;color:#0ff;}</style></head><body><h1>Bookmarks</h1><p>View your bookmarks via the bookmarks page.</p></body></html>"
+  },
+  {
+    "url": "history",
+    "title": "History (built-in)",
+    "content": "<!DOCTYPE html><html><head><style>body{background:#1a1a2e;color:#0ff;}</style></head><body><h1>History</h1><p>View your history via the history page.</p></body></html>"
+  }
+]
