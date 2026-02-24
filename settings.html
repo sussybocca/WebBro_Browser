@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Settings – Chaos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0a0c14;
+            color: #0ff;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { font-size: 3rem; text-shadow: 0 0 10px #f0f; margin-bottom: 2rem; }
+        .setting-group {
+            background: #1a1a2e;
+            border: 1px solid #f0f;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(255,0,255,0.3);
+        }
+        h2 { color: #b0f; margin-bottom: 1rem; }
+        label { display: block; margin: 1rem 0 0.5rem; }
+        select, input[type="text"], input[type="number"] {
+            background: #0f0f1a;
+            border: 2px solid #3a3a5a;
+            color: #0ff;
+            padding: 0.5rem;
+            font-family: inherit;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+        button {
+            background: #2a2a3b;
+            border: 2px solid #f0f;
+            color: #0ff;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: 0.2s;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background: #f0f;
+            color: #000;
+            box-shadow: 0 0 15px #f0f;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .checkbox-label input {
+            width: auto;
+        }
+        .danger {
+            border-color: #f00;
+            color: #f66;
+        }
+        .danger button {
+            border-color: #f00;
+            color: #f66;
+        }
+        .danger button:hover {
+            background: #f00;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚙️ Settings</h1>
+
+    <div class="setting-group">
+        <h2>Appearance</h2>
+        <label>Theme</label>
+        <select id="themeSelect">
+            <option value="dark">Dark (default)</option>
+            <option value="light">Light</option>
+        </select>
+
+        <label>Glitch Intensity</label>
+        <input type="range" id="glitchIntensity" min="0" max="2" step="0.1" value="1">
+
+        <label>Background Effect</label>
+        <select id="bgEffect">
+            <option value="perlin">Perlin Noise</option>
+            <option value="particles">Particles</option>
+            <option value="static">Static</option>
+            <option value="none">None</option>
+        </select>
+    </div>
+
+    <div class="setting-group">
+        <h2>Search</h2>
+        <label>Default Search Engine</label>
+        <select id="searchEngine">
+            <option value="internal">Internal (sites.json)</option>
+            <option value="google">Google (via fallback)</option>
+            <option value="duckduckgo">DuckDuckGo</option>
+        </select>
+
+        <label>Search Suggestions</label>
+        <div class="checkbox-label">
+            <input type="checkbox" id="suggestionsEnabled" checked> Enable suggestions
+        </div>
+    </div>
+
+    <div class="setting-group">
+        <h2>Privacy</h2>
+        <div class="checkbox-label">
+            <input type="checkbox" id="historyEnabled" checked> Save browsing history
+        </div>
+        <div class="checkbox-label">
+            <input type="checkbox" id="analyticsEnabled" checked> Allow anonymous analytics
+        </div>
+        <button id="clearHistoryBtn" class="danger">Clear History</button>
+        <button id="clearBookmarksBtn" class="danger">Clear All Bookmarks</button>
+    </div>
+
+    <div class="setting-group">
+        <h2>Advanced</h2>
+        <label>Maximum Tabs</label>
+        <input type="number" id="maxTabs" min="5" max="50" value="20">
+
+        <label>Homepage</label>
+        <input type="text" id="homepage" value="newtab.html">
+
+        <button id="exportDataBtn">Export Data (JSON)</button>
+        <button id="importDataBtn">Import Data</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+    </div>
+
+    <script>
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('chaosSettings') || '{}');
+            document.getElementById('themeSelect').value = settings.theme || 'dark';
+            document.getElementById('glitchIntensity').value = settings.glitchIntensity || 1;
+            document.getElementById('bgEffect').value = settings.bgEffect || 'perlin';
+            document.getElementById('searchEngine').value = settings.searchEngine || 'internal';
+            document.getElementById('suggestionsEnabled').checked = settings.suggestionsEnabled !== false;
+            document.getElementById('historyEnabled').checked = settings.historyEnabled !== false;
+            document.getElementById('analyticsEnabled').checked = settings.analyticsEnabled !== false;
+            document.getElementById('maxTabs').value = settings.maxTabs || 20;
+            document.getElementById('homepage').value = settings.homepage || 'newtab.html';
+        }
+
+        function saveSettings() {
+            const settings = {
+                theme: document.getElementById('themeSelect').value,
+                glitchIntensity: parseFloat(document.getElementById('glitchIntensity').value),
+                bgEffect: document.getElementById('bgEffect').value,
+                searchEngine: document.getElementById('searchEngine').value,
+                suggestionsEnabled: document.getElementById('suggestionsEnabled').checked,
+                historyEnabled: document.getElementById('historyEnabled').checked,
+                analyticsEnabled: document.getElementById('analyticsEnabled').checked,
+                maxTabs: parseInt(document.getElementById('maxTabs').value, 10),
+                homepage: document.getElementById('homepage').value
+            };
+            localStorage.setItem('chaosSettings', JSON.stringify(settings));
+            // Notify parent
+            window.parent.postMessage({ type: 'settingsChanged', settings }, '*');
+            alert('Settings saved.');
+        }
+
+        document.querySelectorAll('select, input').forEach(el => {
+            el.addEventListener('change', saveSettings);
+        });
+        document.getElementById('glitchIntensity').addEventListener('input', saveSettings);
+
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            if (confirm('Clear entire history?')) {
+                window.parent.postMessage({ type: 'clearHistory' }, '*');
+            }
+        });
+
+        document.getElementById('clearBookmarksBtn').addEventListener('click', () => {
+            if (confirm('Delete all bookmarks?')) {
+                window.parent.postMessage({ type: 'clearBookmarks' }, '*');
+            }
+        });
+
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            window.parent.postMessage({ type: 'exportData' }, '*');
+        });
+
+        document.getElementById('importDataBtn').addEventListener('click', () => {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    window.parent.postMessage({ type: 'importData', data: e.target.result }, '*');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        loadSettings();
+    </script>
+</body>
+</html>
